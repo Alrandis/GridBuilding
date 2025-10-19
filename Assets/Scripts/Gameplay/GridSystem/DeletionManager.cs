@@ -6,19 +6,21 @@ public class DeletionManager : MonoBehaviour
     [SerializeField] private GridManager _gridManager;
     [SerializeField] private InputManager _inputManager;
 
-    private Camera _camera;
     private bool _isActive;
-
-    private void Awake()
+    private void OnEnable()
     {
-        _camera = Camera.main; 
+        _inputManager.OnDelete += TryDeleteUnderCursor;
+    }
+
+    private void OnDisable()
+    {
+        _inputManager.OnDelete -= TryDeleteUnderCursor;
     }
 
     public void EnableMode()
     {
         if (_isActive) return;
         _isActive = true;
-        SubscribeInput();
         Debug.Log("Deletion enabled");
     }
 
@@ -26,28 +28,16 @@ public class DeletionManager : MonoBehaviour
     {
         if (!_isActive) return;
         _isActive = false;
-        UnsubscribeInput();
+     
         Debug.Log("Deletion disabled");
     }
 
-    private void SubscribeInput()
-    {
-        if (_inputManager == null) return;
-        var input = _inputManager.InputActions.GridPlacement;
-        input.Delete.performed += ctx => TryDeleteUnderCursor();
-    }
-
-    private void UnsubscribeInput()
-    {
-        if (_inputManager == null) return;
-        var input = _inputManager.InputActions.GridPlacement;
-        input.Delete.performed -= ctx => TryDeleteUnderCursor();
-    }
-
-
     private void TryDeleteUnderCursor()
     {
-        Vector3 mouseWorld = _camera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        if (!_isActive) return;
+
+        Vector3 mouseWorld = _inputManager.MouseWorldPosition;
+
         mouseWorld.z = 0;
 
         Vector2Int gridPos = _gridManager.GetGridPosition(mouseWorld);

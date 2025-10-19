@@ -7,21 +7,29 @@ public class PlacementManager : MonoBehaviour
     [SerializeField] private GridManager _gridManager;
     [SerializeField] private GameObject _testBuildingPrefab;
     [SerializeField] private InputManager _inputManager; // если используешь централизованный InputManager
+    [SerializeField] private float _moveRepeatDelay = 0.18f;
 
     private GameObject _currentBuilding;
     private Vector2Int _currentGridPos;
     private Vector2 _moveInput;
     private bool _isActive;
-
-    // таймер/повтор сдерживания (если нужно)
-    [SerializeField] private float _moveRepeatDelay = 0.18f;
     private float _moveTimer;
+
+    private void OnEnable()
+    {
+        _inputManager.OnPlace += PlaceBuilding;
+    }
+
+    private void OnDisable()
+    {
+        _inputManager.OnPlace -= PlaceBuilding;
+    }
 
     public void EnableMode()
     {
         if (_isActive) return;
         _isActive = true;
-        SubscribeInput();
+        
         SpawnTestIfNeeded();
         Debug.Log("Placement enabled");
     }
@@ -30,7 +38,7 @@ public class PlacementManager : MonoBehaviour
     {
         if (!_isActive) return;
         _isActive = false;
-        UnsubscribeInput();
+
         // Отменяем текущее превью (не фиксируем)
         if (_currentBuilding != null)
         {
@@ -38,28 +46,6 @@ public class PlacementManager : MonoBehaviour
             _currentBuilding = null;
         }
         Debug.Log("Placement disabled");
-    }
-
-    private void SubscribeInput()
-    {
-        if (_inputManager == null) return;
-        var input = _inputManager.InputActions.GridPlacement;
-        input.Move.performed += OnMovePerformed;
-        input.Move.canceled += ctx => _moveInput = Vector2.zero;
-        input.Place.performed += ctx => PlaceBuilding();
-    }
-
-    private void UnsubscribeInput()
-    {
-        if (_inputManager == null) return;
-        var input = _inputManager.InputActions.GridPlacement;
-        input.Move.performed -= OnMovePerformed;
-        input.Place.performed -= ctx => PlaceBuilding(); // safe unsubscribe
-    }
-
-    private void OnMovePerformed(InputAction.CallbackContext context)
-    {
-        _moveInput = context.ReadValue<Vector2>();
     }
 
     private void Update()
@@ -96,7 +82,7 @@ public class PlacementManager : MonoBehaviour
 
         if (!movedByKeyboard)
         {
-            Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            Vector3 mouseWorld = _inputManager.MouseWorldPosition;
             mouseWorld.z = 0;
             _currentGridPos = _gridManager.GetGridPosition(mouseWorld);
         }
