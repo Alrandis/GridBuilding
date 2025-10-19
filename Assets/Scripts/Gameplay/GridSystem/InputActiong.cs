@@ -44,6 +44,15 @@ public partial class @InputActiong: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Delete"",
+                    ""type"": ""Button"",
+                    ""id"": ""4b4e1e50-642d-433b-b6d2-23e23e3a1cb9"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -112,6 +121,17 @@ public partial class @InputActiong: IInputActionCollection2, IDisposable
                     ""action"": ""Place"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dd484953-69aa-4274-95b0-a97a2237a527"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Mouse & Keyboard"",
+                    ""action"": ""Delete"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -139,6 +159,7 @@ public partial class @InputActiong: IInputActionCollection2, IDisposable
         m_GridPlacement = asset.FindActionMap("GridPlacement", throwIfNotFound: true);
         m_GridPlacement_Move = m_GridPlacement.FindAction("Move", throwIfNotFound: true);
         m_GridPlacement_Place = m_GridPlacement.FindAction("Place", throwIfNotFound: true);
+        m_GridPlacement_Delete = m_GridPlacement.FindAction("Delete", throwIfNotFound: true);
     }
 
     ~@InputActiong()
@@ -207,12 +228,14 @@ public partial class @InputActiong: IInputActionCollection2, IDisposable
     private List<IGridPlacementActions> m_GridPlacementActionsCallbackInterfaces = new List<IGridPlacementActions>();
     private readonly InputAction m_GridPlacement_Move;
     private readonly InputAction m_GridPlacement_Place;
+    private readonly InputAction m_GridPlacement_Delete;
     public struct GridPlacementActions
     {
         private @InputActiong m_Wrapper;
         public GridPlacementActions(@InputActiong wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_GridPlacement_Move;
         public InputAction @Place => m_Wrapper.m_GridPlacement_Place;
+        public InputAction @Delete => m_Wrapper.m_GridPlacement_Delete;
         public InputActionMap Get() { return m_Wrapper.m_GridPlacement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -228,6 +251,9 @@ public partial class @InputActiong: IInputActionCollection2, IDisposable
             @Place.started += instance.OnPlace;
             @Place.performed += instance.OnPlace;
             @Place.canceled += instance.OnPlace;
+            @Delete.started += instance.OnDelete;
+            @Delete.performed += instance.OnDelete;
+            @Delete.canceled += instance.OnDelete;
         }
 
         private void UnregisterCallbacks(IGridPlacementActions instance)
@@ -238,6 +264,9 @@ public partial class @InputActiong: IInputActionCollection2, IDisposable
             @Place.started -= instance.OnPlace;
             @Place.performed -= instance.OnPlace;
             @Place.canceled -= instance.OnPlace;
+            @Delete.started -= instance.OnDelete;
+            @Delete.performed -= instance.OnDelete;
+            @Delete.canceled -= instance.OnDelete;
         }
 
         public void RemoveCallbacks(IGridPlacementActions instance)
@@ -268,5 +297,6 @@ public partial class @InputActiong: IInputActionCollection2, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnPlace(InputAction.CallbackContext context);
+        void OnDelete(InputAction.CallbackContext context);
     }
 }
