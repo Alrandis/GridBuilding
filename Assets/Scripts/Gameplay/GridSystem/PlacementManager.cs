@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 public class PlacementManager : MonoBehaviour
 {
     [SerializeField] private GridManager _gridManager;
@@ -9,6 +10,9 @@ public class PlacementManager : MonoBehaviour
     private Vector2Int _currentGridPos;
     private InputActiong _playerInput;
     private Vector2 _moveInput;
+
+    [SerializeField] private float _moveRepeatDelay = 0.2f; // задержка между шагами при удержании клавиши
+    private float _moveTimer;
 
     private void Awake()
     {
@@ -30,27 +34,54 @@ public class PlacementManager : MonoBehaviour
 
     private void HandleMovement()
     {
-        // WASD / Arrow Keys движение по сетке
+        bool movedByKeyboard = false;
+
+        // Движение по клавиатуре
         if (_moveInput.sqrMagnitude > 0)
         {
-            Vector2Int delta = new Vector2Int(
-                Mathf.RoundToInt(_moveInput.x),
-                Mathf.RoundToInt(_moveInput.y)
-            );
-            if (delta != Vector2Int.zero)
+            _moveTimer -= Time.deltaTime;
+
+            if (_moveTimer <= 0f)
             {
-                _currentGridPos += delta;
-                _currentGridPos = new Vector2Int(
-                    Mathf.Clamp(_currentGridPos.x, -1000, 1000), // ограничения для теста
-                    Mathf.Clamp(_currentGridPos.y, -1000, 1000)
+                Vector2Int delta = new Vector2Int(
+                    Mathf.RoundToInt(_moveInput.x),
+                    Mathf.RoundToInt(_moveInput.y)
                 );
+
+                if (delta != Vector2Int.zero)
+                {
+                    _currentGridPos += delta;
+                    _currentGridPos = new Vector2Int(
+                        Mathf.Clamp(_currentGridPos.x, -1000, 1000),
+                        Mathf.Clamp(_currentGridPos.y, -1000, 1000)
+                    );
+
+                    _moveTimer = _moveRepeatDelay; // сброс таймера
+                    movedByKeyboard = true;
+                }
             }
         }
+        else
+        {
+            _moveTimer = 0f; // сброс при отпускании
+        }
 
-        // Движение мышью
-        Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        mouseWorld.z = 0;
-        _currentGridPos = _gridManager.GetGridPosition(mouseWorld);
+        // Если не двигались с клавиатуры — следуем за мышью
+        if (!movedByKeyboard)
+        {
+            Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            mouseWorld.z = 0;
+            _currentGridPos = _gridManager.GetGridPosition(mouseWorld);
+        }
+        else
+        {
+            // Если двигались клавиатурой — подвинем курсор к новой позиции
+            Vector3 worldPos = _gridManager.GetWorldPosition(_currentGridPos.x, _currentGridPos.y);
+            Vector3 screenPos = Camera.main.WorldToScreenPoint(worldPos);
+
+            Mouse.current.WarpCursorPosition(screenPos);
+            InputState.Change(Mouse.current.position, screenPos); // обновляем внутреннее состояние Input System
+        }
     }
 
     private void UpdateBuildingPosition()
