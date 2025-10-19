@@ -22,7 +22,12 @@ public class GridManager : MonoBehaviour
 
     public Vector3 GetWorldPosition(int x, int y)
     {
-        return new Vector3(x * _cellSize, y * _cellSize, 0);
+        // Сдвигаем в центр клетки
+        return new Vector3(
+            x * _cellSize + _cellSize / 2f,
+            y * _cellSize + _cellSize / 2f,
+            0
+        );
     }
 
     public Vector2Int GetGridPosition(Vector3 worldPosition)
