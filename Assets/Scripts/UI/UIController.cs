@@ -10,22 +10,23 @@ public class UIController : MonoBehaviour
     [Header("Buttons")]
     [SerializeField] private Button _placeModeButton;
     [SerializeField] private Button _deleteModeButton;
-    [SerializeField] private Button _building1Button;
-    [SerializeField] private Button _building2Button;
-    [SerializeField] private Button _building3Button;
     [SerializeField] private Button _saveButton;
     [SerializeField] private Button _loadButton;
+    [SerializeField] private BuildingButton[] _buildingButtons;
+
+    [SerializeField] private GameObject _buildingPanel;
 
     private void Awake()
     {
+        _buildingPanel.SetActive(false);
         // Основные режимы
         _placeModeButton.onClick.AddListener(EnablePlacementMode);
         _deleteModeButton.onClick.AddListener(EnableDeletionMode);
 
-        // Кнопки выбора зданий (пока только пример, можно передавать prefab)
-        _building1Button.onClick.AddListener(() => SelectBuilding(1));
-        _building2Button.onClick.AddListener(() => SelectBuilding(2));
-        _building3Button.onClick.AddListener(() => SelectBuilding(3));
+        for (int i = 0; i < _buildingButtons.Length; i++)
+        {
+            _buildingButtons[i].OnBuildingSelected += SelectBuilding;
+        }
 
         // Сохранение / загрузка
         _saveButton.onClick.AddListener(SaveData);
@@ -35,6 +36,7 @@ public class UIController : MonoBehaviour
     #region Mode Switching
     private void EnablePlacementMode()
     {
+        _buildingPanel.SetActive(true);
         _deletionManager.DisableMode();
         _placementManager.EnableMode();
         Debug.Log("Switched to Placement Mode");
@@ -42,6 +44,7 @@ public class UIController : MonoBehaviour
 
     private void EnableDeletionMode()
     {
+        _buildingPanel.SetActive(false);
         _placementManager.DisableMode();
         _deletionManager.EnableMode();
         Debug.Log("Switched to Deletion Mode");
@@ -49,12 +52,10 @@ public class UIController : MonoBehaviour
     #endregion
 
     #region Building Selection
-    private void SelectBuilding(int index)
+    private void SelectBuilding(GameObject building)
     {
-        // Здесь можно передавать prefab в PlacementManager
-        // Например:
-        // _placementManager.SetCurrentBuilding(_buildingPrefabs[index]);
-        Debug.Log($"Selected building {index}");
+        _placementManager.SetBuilding(building);
+        Debug.Log($"Selected building {building}");
     }
     #endregion
 

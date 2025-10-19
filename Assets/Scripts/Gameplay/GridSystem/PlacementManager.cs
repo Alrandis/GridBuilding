@@ -5,11 +5,12 @@ using UnityEngine.InputSystem.LowLevel;
 public class PlacementManager : MonoBehaviour
 {
     [SerializeField] private GridManager _gridManager;
-    [SerializeField] private GameObject _testBuildingPrefab;
     [SerializeField] private InputManager _inputManager; // если используешь централизованный InputManager
     [SerializeField] private float _moveRepeatDelay = 0.18f;
 
     private GameObject _currentBuilding;
+    private GameObject _buildingPrefab;
+
     private Vector2Int _currentGridPos;
     private Vector2 _moveInput;
     private bool _isActive;
@@ -29,8 +30,6 @@ public class PlacementManager : MonoBehaviour
     {
         if (_isActive) return;
         _isActive = true;
-        
-        SpawnTestIfNeeded();
         Debug.Log("Placement enabled");
     }
 
@@ -60,7 +59,7 @@ public class PlacementManager : MonoBehaviour
     private void HandleMovement()
     {
         bool movedByKeyboard = false;
-
+        _moveInput = _inputManager.MoveInput;
         if (_moveInput.sqrMagnitude > 0f)
         {
             _moveTimer -= Time.deltaTime;
@@ -114,17 +113,16 @@ public class PlacementManager : MonoBehaviour
         _currentBuilding = null;
     }
 
-    // Тест-спавн (вызов через UIController или при включении режима)
-    public void SpawnTestBuildingAtOrigin()
+    public void SetBuilding(GameObject go)
+    {
+        _buildingPrefab = go;
+        SpawnBuilding();
+    }
+
+    public void SpawnBuilding()
     {
         if (_currentBuilding != null) Destroy(_currentBuilding);
         _currentGridPos = Vector2Int.zero;
-        _currentBuilding = Instantiate(_testBuildingPrefab, _gridManager.GetWorldPosition(0, 0), Quaternion.identity);
-    }
-
-    private void SpawnTestIfNeeded()
-    {
-        if (_currentBuilding == null && _testBuildingPrefab != null)
-            SpawnTestBuildingAtOrigin();
+        _currentBuilding = Instantiate(_buildingPrefab, _gridManager.GetWorldPosition(0, 0), Quaternion.identity);
     }
 }
