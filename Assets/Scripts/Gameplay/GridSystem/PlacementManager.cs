@@ -1,31 +1,70 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
+
 public class PlacementManager : MonoBehaviour
 {
     [SerializeField] private GridManager _gridManager;
-    [SerializeField] private GameObject _testBuildingPrefab; // для теста
+    [SerializeField] private GameObject _testBuildingPrefab;
+    [SerializeField] private InputManager _inputManager; // если используешь централизованный InputManager
 
     private GameObject _currentBuilding;
     private Vector2Int _currentGridPos;
-    private InputActiong _playerInput;
     private Vector2 _moveInput;
+    private bool _isActive;
 
-    [SerializeField] private float _moveRepeatDelay = 0.2f; // задержка между шагами при удержании клавиши
+    // таймер/повтор сдерживания (если нужно)
+    [SerializeField] private float _moveRepeatDelay = 0.18f;
     private float _moveTimer;
 
-    private void Awake()
+    public void EnableMode()
     {
-        _playerInput = new InputActiong(); // нужно сгенерировать через Input Actions
-        _playerInput.Enable();
+        if (_isActive) return;
+        _isActive = true;
+        SubscribeInput();
+        SpawnTestIfNeeded();
+        Debug.Log("Placement enabled");
+    }
 
-        _playerInput.GridPlacement.Move.performed += context => _moveInput = context.ReadValue<Vector2>();
-        _playerInput.GridPlacement.Move.canceled += context => _moveInput = Vector2.zero;
-        _playerInput.GridPlacement.Place.performed += context => PlaceBuilding();
+    public void DisableMode()
+    {
+        if (!_isActive) return;
+        _isActive = false;
+        UnsubscribeInput();
+        // Отменяем текущее превью (не фиксируем)
+        if (_currentBuilding != null)
+        {
+            Destroy(_currentBuilding);
+            _currentBuilding = null;
+        }
+        Debug.Log("Placement disabled");
+    }
+
+    private void SubscribeInput()
+    {
+        if (_inputManager == null) return;
+        var input = _inputManager.InputActions.GridPlacement;
+        input.Move.performed += OnMovePerformed;
+        input.Move.canceled += ctx => _moveInput = Vector2.zero;
+        input.Place.performed += ctx => PlaceBuilding();
+    }
+
+    private void UnsubscribeInput()
+    {
+        if (_inputManager == null) return;
+        var input = _inputManager.InputActions.GridPlacement;
+        input.Move.performed -= OnMovePerformed;
+        input.Place.performed -= ctx => PlaceBuilding(); // safe unsubscribe
+    }
+
+    private void OnMovePerformed(InputAction.CallbackContext context)
+    {
+        _moveInput = context.ReadValue<Vector2>();
     }
 
     private void Update()
     {
+        if (!_isActive) return;
         if (_currentBuilding == null) return;
 
         HandleMovement();
@@ -36,37 +75,25 @@ public class PlacementManager : MonoBehaviour
     {
         bool movedByKeyboard = false;
 
-        // Движение по клавиатуре
-        if (_moveInput.sqrMagnitude > 0)
+        if (_moveInput.sqrMagnitude > 0f)
         {
             _moveTimer -= Time.deltaTime;
-
             if (_moveTimer <= 0f)
             {
-                Vector2Int delta = new Vector2Int(
-                    Mathf.RoundToInt(_moveInput.x),
-                    Mathf.RoundToInt(_moveInput.y)
-                );
-
+                Vector2Int delta = new Vector2Int(Mathf.RoundToInt(_moveInput.x), Mathf.RoundToInt(_moveInput.y));
                 if (delta != Vector2Int.zero)
                 {
                     _currentGridPos += delta;
-                    _currentGridPos = new Vector2Int(
-                        Mathf.Clamp(_currentGridPos.x, -1000, 1000),
-                        Mathf.Clamp(_currentGridPos.y, -1000, 1000)
-                    );
-
-                    _moveTimer = _moveRepeatDelay; // сброс таймера
+                    _moveTimer = _moveRepeatDelay;
                     movedByKeyboard = true;
                 }
             }
         }
         else
         {
-            _moveTimer = 0f; // сброс при отпускании
+            _moveTimer = 0f;
         }
 
-        // Если не двигались с клавиатуры — следуем за мышью
         if (!movedByKeyboard)
         {
             Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
@@ -75,12 +102,11 @@ public class PlacementManager : MonoBehaviour
         }
         else
         {
-            // Если двигались клавиатурой — подвинем курсор к новой позиции
+            // синхронизируем курсор с позицией
             Vector3 worldPos = _gridManager.GetWorldPosition(_currentGridPos.x, _currentGridPos.y);
             Vector3 screenPos = Camera.main.WorldToScreenPoint(worldPos);
-
             Mouse.current.WarpCursorPosition(screenPos);
-            InputState.Change(Mouse.current.position, screenPos); // обновляем внутреннее состояние Input System
+            InputState.Change(Mouse.current.position, screenPos);
         }
     }
 
@@ -92,25 +118,27 @@ public class PlacementManager : MonoBehaviour
     private void PlaceBuilding()
     {
         if (_currentBuilding == null) return;
-        // Здесь можно добавить проверку занятости
+        if (_gridManager.IsOccupied(_currentGridPos))
+        {
+            Debug.Log("Cell occupied, can't place.");
+            return;
+        }
+
+        _gridManager.PlaceBuilding(_currentGridPos, _currentBuilding);
         _currentBuilding = null;
     }
 
-    #region TEST SPAWN (для теста нажатием E)
-    private void OnGUI()
-    {
-        if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.E)
-        {
-            SpawnTestBuilding();
-        }
-    }
-
-    private void SpawnTestBuilding()
+    // Тест-спавн (вызов через UIController или при включении режима)
+    public void SpawnTestBuildingAtOrigin()
     {
         if (_currentBuilding != null) Destroy(_currentBuilding);
-
         _currentGridPos = Vector2Int.zero;
         _currentBuilding = Instantiate(_testBuildingPrefab, _gridManager.GetWorldPosition(0, 0), Quaternion.identity);
     }
-    #endregion
+
+    private void SpawnTestIfNeeded()
+    {
+        if (_currentBuilding == null && _testBuildingPrefab != null)
+            SpawnTestBuildingAtOrigin();
+    }
 }

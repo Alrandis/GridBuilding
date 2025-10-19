@@ -4,36 +4,46 @@ using UnityEngine.InputSystem;
 public class DeletionManager : MonoBehaviour
 {
     [SerializeField] private GridManager _gridManager;
-    [SerializeField] private LayerMask _buildingLayer;
+    [SerializeField] private InputManager _inputManager;
 
     private Camera _camera;
-
-    private InputActiong _playerInput;
+    private bool _isActive;
 
     private void Awake()
     {
-        _camera = Camera.main;
-
-        // Удаление по клику мышью (например, правая кнопка)
-        _playerInput = new InputActiong();
-        _playerInput.Enable();
-        _playerInput.GridPlacement.Delete.performed += context =>
-        {
-            TryDeleteUnderCursor();
-            Debug.Log("Нажатие сработало");
-        };
-       
+        _camera = Camera.main; 
     }
 
-    //private void Update()
-    //{
-    //    if (Input.GetMouseButtonDown(1)) TryDeleteUnderCursor();
-    //}
-
-    private void OnDestroy()
+    public void EnableMode()
     {
-        _playerInput.Disable();
+        if (_isActive) return;
+        _isActive = true;
+        SubscribeInput();
+        Debug.Log("Deletion enabled");
     }
+
+    public void DisableMode()
+    {
+        if (!_isActive) return;
+        _isActive = false;
+        UnsubscribeInput();
+        Debug.Log("Deletion disabled");
+    }
+
+    private void SubscribeInput()
+    {
+        if (_inputManager == null) return;
+        var input = _inputManager.InputActions.GridPlacement;
+        input.Delete.performed += ctx => TryDeleteUnderCursor();
+    }
+
+    private void UnsubscribeInput()
+    {
+        if (_inputManager == null) return;
+        var input = _inputManager.InputActions.GridPlacement;
+        input.Delete.performed -= ctx => TryDeleteUnderCursor();
+    }
+
 
     private void TryDeleteUnderCursor()
     {
