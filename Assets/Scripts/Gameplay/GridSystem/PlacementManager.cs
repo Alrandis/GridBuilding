@@ -21,11 +21,13 @@ public class PlacementManager : MonoBehaviour
     private void OnEnable()
     {
         _inputManager.OnPlace += PlaceBuilding;
+        _inputManager.OnRotate += HandleRotation;
     }
 
     private void OnDisable()
     {
         _inputManager.OnPlace -= PlaceBuilding;
+        _inputManager.OnRotate -= HandleRotation;
     }
 
     public void EnableMode()
@@ -55,6 +57,7 @@ public class PlacementManager : MonoBehaviour
         if (_currentBuilding == null) return;
 
         HandleMovement();
+        HandleRotation();
         UpdateBuildingPosition();
     }
 
@@ -97,6 +100,17 @@ public class PlacementManager : MonoBehaviour
         }
     }
 
+    private void HandleRotation()
+    {
+        if (Keyboard.current.rKey.wasPressedThisFrame && _currentBuilding != null)
+        {
+            _currentRotation += 90;
+            if (_currentRotation >= 360) _currentRotation = 0;
+
+            _currentBuilding.transform.rotation = Quaternion.Euler(0, 0, _currentRotation);
+        }
+    }
+
     private void UpdateBuildingPosition()
     {
         _currentBuilding.transform.position = _gridManager.GetWorldPosition(_currentGridPos.x, _currentGridPos.y);
@@ -113,7 +127,7 @@ public class PlacementManager : MonoBehaviour
             return;
         }
 
-        var cells = placeable.GetWorldCells(_currentGridPos);
+        var cells = placeable.GetWorldCells(_currentGridPos, _currentRotation);
         if (!_gridManager.IsAreaFree(cells))
         {
             Debug.Log("Can't place Ч cells occupied!");
@@ -122,6 +136,7 @@ public class PlacementManager : MonoBehaviour
 
         _gridManager.OccupyCells(placeable.GetWorldCells(_currentGridPos), _currentBuilding);
         _currentBuilding = null;
+        _currentRotation = 0; // сбрасываем угол дл€ следующего здани€
     }
 
     public void SetBuilding(GameObject go)

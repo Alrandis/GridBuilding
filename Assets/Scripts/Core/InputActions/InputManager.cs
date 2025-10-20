@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
 
 public class InputManager : MonoBehaviour
 {
@@ -11,8 +13,9 @@ public class InputManager : MonoBehaviour
 
     public Vector2 MoveInput { get; private set; }
 
-    public event System.Action OnPlace;
-    public event System.Action OnDelete;
+    public event Action OnPlace;
+    public event Action OnDelete;
+    public event Action OnRotate;
 
     private void Awake()
     {
@@ -25,6 +28,7 @@ public class InputManager : MonoBehaviour
 
         _playerInput.GridPlacement.Place.performed += OnPlacePerformed;
         _playerInput.GridPlacement.Delete.performed += OnDeletePerformed;
+        _playerInput.GridPlacement.Rotate.performed += OnRotatePerformed;
         _playerInput.GridPlacement.Move.performed += ctx => MoveInput = ctx.ReadValue<Vector2>();
         _playerInput.GridPlacement.Move.canceled += ctx => MoveInput = Vector2.zero;
     }
@@ -33,6 +37,7 @@ public class InputManager : MonoBehaviour
     {
         _playerInput.GridPlacement.Place.performed -= OnPlacePerformed;
         _playerInput.GridPlacement.Delete.performed -= OnDeletePerformed;
+        _playerInput.GridPlacement.Rotate.performed -= OnRotatePerformed;
         _playerInput.Disable();
     }
 
@@ -44,4 +49,5 @@ public class InputManager : MonoBehaviour
 
     private void OnPlacePerformed(InputAction.CallbackContext context) => OnPlace?.Invoke();
     private void OnDeletePerformed(InputAction.CallbackContext context) => OnDelete?.Invoke();
+    private void OnRotatePerformed(InputAction.CallbackContext context) => OnRotate?.Invoke();
 }
