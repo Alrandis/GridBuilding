@@ -1,11 +1,24 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
+
+public class PlacedBuilding
+{
+    public GameObject GameObject { get; }
+    public Vector2Int[] Cells { get; }
+
+    public PlacedBuilding(GameObject go, IEnumerable<Vector2Int> cells)
+    {
+        GameObject = go;
+        Cells = cells.ToArray(); // <-- преобразуем IEnumerable в массив
+    }
+}
 
 public class GridManager : MonoBehaviour
 {
     [SerializeField] private float _cellSize = 1f;
 
-    private Dictionary<Vector2Int, GameObject> _placedBuildings = new();
+    private Dictionary<Vector2Int, PlacedBuilding> _placedBuildings = new();
 
     public float CellSize => _cellSize;
 
@@ -42,16 +55,36 @@ public class GridManager : MonoBehaviour
         return _placedBuildings.ContainsKey(gridPos);
     }
 
-    public void PlaceBuilding(Vector2Int gridPos, GameObject building)
+    public bool IsAreaFree(IEnumerable<Vector2Int> cells)
     {
-        if (IsOccupied(gridPos)) return;
-        _placedBuildings.Add(gridPos, building);
+        foreach (var cell in cells)
+        {
+            if (_placedBuildings.ContainsKey(cell))
+                return false;
+        }
+        return true;
+    }
+
+    public void OccupyCells(IEnumerable<Vector2Int> cells, GameObject building)
+    {
+        PlacedBuilding placedBuilding = new PlacedBuilding(building, cells);
+
+        foreach (var cell in placedBuilding.Cells)
+        {
+            _placedBuildings[cell] = placedBuilding;
+        }
     }
 
     public void RemoveBuilding(Vector2Int gridPos)
     {
         if (!_placedBuildings.ContainsKey(gridPos)) return;
-        Destroy(_placedBuildings[gridPos]);
-        _placedBuildings.Remove(gridPos);
+        PlacedBuilding building = _placedBuildings[gridPos];
+
+        // Удаляем все ключи из словаря
+        foreach (var cell in building.Cells)
+            _placedBuildings.Remove(cell);
+
+        // Удаляем объект со сцены
+        Destroy(building.GameObject);
     }
 }

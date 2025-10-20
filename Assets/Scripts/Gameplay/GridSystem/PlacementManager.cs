@@ -16,6 +16,8 @@ public class PlacementManager : MonoBehaviour
     private bool _isActive;
     private float _moveTimer;
 
+    private int _currentRotation = 0; // угол в градусах, кратный 90
+
     private void OnEnable()
     {
         _inputManager.OnPlace += PlaceBuilding;
@@ -103,13 +105,22 @@ public class PlacementManager : MonoBehaviour
     private void PlaceBuilding()
     {
         if (_currentBuilding == null) return;
-        if (_gridManager.IsOccupied(_currentGridPos))
+
+        var placeable = _currentBuilding.GetComponent<PlaceableObject>();
+        if (placeable == null)
         {
-            Debug.Log("Cell occupied, can't place.");
+            Debug.LogWarning("Prefab missing PlaceableObject!");
             return;
         }
 
-        _gridManager.PlaceBuilding(_currentGridPos, _currentBuilding);
+        var cells = placeable.GetWorldCells(_currentGridPos);
+        if (!_gridManager.IsAreaFree(cells))
+        {
+            Debug.Log("Can't place Ч cells occupied!");
+            return;
+        }
+
+        _gridManager.OccupyCells(placeable.GetWorldCells(_currentGridPos), _currentBuilding);
         _currentBuilding = null;
     }
 

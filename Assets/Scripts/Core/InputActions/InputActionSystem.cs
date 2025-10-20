@@ -53,6 +53,15 @@ public partial class @InputActionSystem: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Rotate"",
+                    ""type"": ""Button"",
+                    ""id"": ""84f70cff-4ed7-4633-8f39-467399c6b0db"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -114,7 +123,7 @@ public partial class @InputActionSystem: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""e1757d07-fc10-4a6a-91ef-65b73dea4c1d"",
-                    ""path"": ""<Keyboard>/space"",
+                    ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -125,11 +134,22 @@ public partial class @InputActionSystem: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""dd484953-69aa-4274-95b0-a97a2237a527"",
-                    ""path"": ""<Mouse>/rightButton"",
+                    ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Mouse & Keyboard"",
                     ""action"": ""Delete"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""43c5a481-5536-485d-8d6a-51a1690e66a4"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -160,6 +180,7 @@ public partial class @InputActionSystem: IInputActionCollection2, IDisposable
         m_GridPlacement_Move = m_GridPlacement.FindAction("Move", throwIfNotFound: true);
         m_GridPlacement_Place = m_GridPlacement.FindAction("Place", throwIfNotFound: true);
         m_GridPlacement_Delete = m_GridPlacement.FindAction("Delete", throwIfNotFound: true);
+        m_GridPlacement_Rotate = m_GridPlacement.FindAction("Rotate", throwIfNotFound: true);
     }
 
     ~@InputActionSystem()
@@ -229,6 +250,7 @@ public partial class @InputActionSystem: IInputActionCollection2, IDisposable
     private readonly InputAction m_GridPlacement_Move;
     private readonly InputAction m_GridPlacement_Place;
     private readonly InputAction m_GridPlacement_Delete;
+    private readonly InputAction m_GridPlacement_Rotate;
     public struct GridPlacementActions
     {
         private @InputActionSystem m_Wrapper;
@@ -236,6 +258,7 @@ public partial class @InputActionSystem: IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_GridPlacement_Move;
         public InputAction @Place => m_Wrapper.m_GridPlacement_Place;
         public InputAction @Delete => m_Wrapper.m_GridPlacement_Delete;
+        public InputAction @Rotate => m_Wrapper.m_GridPlacement_Rotate;
         public InputActionMap Get() { return m_Wrapper.m_GridPlacement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -254,6 +277,9 @@ public partial class @InputActionSystem: IInputActionCollection2, IDisposable
             @Delete.started += instance.OnDelete;
             @Delete.performed += instance.OnDelete;
             @Delete.canceled += instance.OnDelete;
+            @Rotate.started += instance.OnRotate;
+            @Rotate.performed += instance.OnRotate;
+            @Rotate.canceled += instance.OnRotate;
         }
 
         private void UnregisterCallbacks(IGridPlacementActions instance)
@@ -267,6 +293,9 @@ public partial class @InputActionSystem: IInputActionCollection2, IDisposable
             @Delete.started -= instance.OnDelete;
             @Delete.performed -= instance.OnDelete;
             @Delete.canceled -= instance.OnDelete;
+            @Rotate.started -= instance.OnRotate;
+            @Rotate.performed -= instance.OnRotate;
+            @Rotate.canceled -= instance.OnRotate;
         }
 
         public void RemoveCallbacks(IGridPlacementActions instance)
@@ -298,5 +327,6 @@ public partial class @InputActionSystem: IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnPlace(InputAction.CallbackContext context);
         void OnDelete(InputAction.CallbackContext context);
+        void OnRotate(InputAction.CallbackContext context);
     }
 }
