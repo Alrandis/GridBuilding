@@ -132,7 +132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 199f281ec543b9649a32bfe7ea9a1d54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _configId: house_01
+  _configId: House01
   _occupiedCells: []
   _pivot: {x: 0, y: 0}
 --- !u!1 &5927275104794285490

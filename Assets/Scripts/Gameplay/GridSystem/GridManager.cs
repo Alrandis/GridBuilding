@@ -4,11 +4,13 @@ using System.Linq;
 
 public class PlacedBuilding
 {
+    public string BuildingId { get; }
     public GameObject GameObject { get; }
     public Vector2Int[] Cells { get; }
 
-    public PlacedBuilding(GameObject go, IEnumerable<Vector2Int> cells)
+    public PlacedBuilding(string buildingId, GameObject go, IEnumerable<Vector2Int> cells)
     {
+        BuildingId = buildingId;
         GameObject = go;
         Cells = cells.ToArray(); // <-- преобразуем IEnumerable в массив
     }
@@ -65,9 +67,9 @@ public class GridManager : MonoBehaviour
         return true;
     }
 
-    public void OccupyCells(IEnumerable<Vector2Int> cells, GameObject building)
+    public void OccupyCells(IEnumerable<Vector2Int> cells, GameObject building, string buildingId)
     {
-        PlacedBuilding placedBuilding = new PlacedBuilding(building, cells);
+        PlacedBuilding placedBuilding = new PlacedBuilding(buildingId, building, cells);
 
         foreach (var cell in placedBuilding.Cells)
         {
@@ -86,5 +88,14 @@ public class GridManager : MonoBehaviour
 
         // Удаляем объект со сцены
         Destroy(building.GameObject);
+    }
+
+    public Dictionary<Vector2Int, PlacedBuilding> GetPlacedBuildings() => _placedBuildings;
+    
+    public void ClearGrid()
+    {
+        foreach (var b in _placedBuildings.Values)
+            Destroy(b.GameObject);
+        _placedBuildings.Clear();
     }
 }

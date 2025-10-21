@@ -9,6 +9,7 @@ public class UIController : MonoBehaviour
     [Header("Managers")]
     [SerializeField] private PlacementManager _placementManager;
     [SerializeField] private DeletionManager _deletionManager;
+    [SerializeField] private SaveManager _saveManager;
 
     [Header("Buttons")]
     [SerializeField] private Button _placeModeButton;
@@ -88,16 +89,15 @@ public class UIController : MonoBehaviour
     #region Save / Load
     private void SaveData()
     {
-        // Пока заглушка
+        _saveManager.SaveGame();
         Debug.Log("Save triggered");
-        // Позже вызывать SaveSystem или аналог
+        
     }
 
     private void LoadData()
     {
-        // Пока заглушка
+        _saveManager.LoadGame();
         Debug.Log("Load triggered");
-        // Позже вызывать LoadSystem или аналог
     }
     #endregion
 }

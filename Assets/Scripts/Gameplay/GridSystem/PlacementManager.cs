@@ -153,7 +153,7 @@ public class PlacementManager : MonoBehaviour
             return;
         }
 
-        _gridManager.OccupyCells(cells, _currentBuilding);
+        _gridManager.OccupyCells(cells, _currentBuilding, placeableObject.ConfigId);
         _currentBuilding = null;
         _currentRotation = 0; // сбрасываем угол для следующего здания
     }

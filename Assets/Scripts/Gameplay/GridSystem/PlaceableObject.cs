@@ -5,6 +5,7 @@ public class PlaceableObject : MonoBehaviour
 {
     [Tooltip("Уникальный Id для здания, что нужен, чтобы подставить данные из конфига.")]
     [SerializeField] private string _configId;
+    public string ConfigId => _configId;
     [Tooltip("Список клеток, которые занимает объект, в локальных координатах относительно pivot.")]
     [SerializeField] private List<Vector2Int> _occupiedCells = new List<Vector2Int>() { Vector2Int.zero };
     [Tooltip("Опорная точка (положение центра привязки на сетке)")]
