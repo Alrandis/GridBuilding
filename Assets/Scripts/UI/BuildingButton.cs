@@ -15,7 +15,7 @@ public class BuildingButton : MonoBehaviour
 
     private void Awake()
     {
-        _button = GetComponent<Button>();
+        _button = GetComponentInChildren<Button>();
         _button.onClick.AddListener(OnClick);
     }
 

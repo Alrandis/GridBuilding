@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -26,16 +27,25 @@ public class UIController : MonoBehaviour
         _placeModeButton.onClick.AddListener(EnablePlacementMode);
         _deleteModeButton.onClick.AddListener(EnableDeletionMode);
 
+        // Сохранение / загрузка
+        _saveButton.onClick.AddListener(SaveData);
+        _loadButton.onClick.AddListener(LoadData);
+    }
+
+    private IEnumerator Start()
+    {
+        // Ждем пока BuildingDatabase.Instance появится и инициализируется
+        yield return new WaitUntil(() =>
+            BuildingDatabase.Instance != null &&
+            BuildingDatabase.Instance.IsInitialized
+        );
+
         List<BuildingConfig> buildingConfigs = BuildingDatabase.Instance.GetAll().ToList();
 
         foreach (BuildingConfig config in buildingConfigs)
         {
             CreateButtonForBuilding(config);
         }
-
-        // Сохранение / загрузка
-        _saveButton.onClick.AddListener(SaveData);
-        _loadButton.onClick.AddListener(LoadData);
     }
 
     private void CreateButtonForBuilding(BuildingConfig config)

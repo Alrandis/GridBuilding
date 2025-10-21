@@ -308,7 +308,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _prefabToSpawn: {fileID: 0}
   _icon: {fileID: 3616697337747851612}
-  _label: {fileID: 0}
+  _label: {fileID: 6604589310556713692}
 --- !u!222 &4704670666066383091
 CanvasRenderer:
   m_ObjectHideFlags: 0

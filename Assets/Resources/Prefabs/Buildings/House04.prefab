@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7618451261373133624}
   - component: {fileID: 6567049641920673770}
   m_Layer: 0
-  m_Name: GameObject (1) 3
+  m_Name: House04
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 199f281ec543b9649a32bfe7ea9a1d54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _configId: house_04
   _occupiedCells:
   - {x: 0, y: 0}
   _pivot: {x: 0, y: 0}

@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class BuildingDatabase : MonoBehaviour
 {
+    [SerializeField] private Dictionary<string, BuildingConfig> _configsById;
+
     public static BuildingDatabase Instance;
-    private Dictionary<string, BuildingConfig> _configsById;
+    public bool IsInitialized { get; private set; }
 
     private void Awake()
     {
@@ -27,6 +29,7 @@ public class BuildingDatabase : MonoBehaviour
             if (!_configsById.ContainsKey(config.Id))
                 _configsById.Add(config.Id, config);
         }
+        IsInitialized = true;
     }
 
     public BuildingConfig GetById(string id)

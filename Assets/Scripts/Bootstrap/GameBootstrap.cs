@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -20,12 +21,15 @@ public class GameBootstrap : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Когда сцена загружена, ищем нужные менеджеры
+        StartCoroutine(InitializeAfterSceneLoaded());
+    }
+
+    private IEnumerator InitializeAfterSceneLoaded()
+    {
+        // Ждём, пока появится BuildingDatabase.Instance
+        yield return new WaitUntil(() => BuildingDatabase.Instance != null);
+
         BuildingDatabase.Instance.Initialize(_configs);
-
-        //if (placementManager != null)
-        //    placementManager.Initialize(_buildingDatabase);
-
         Debug.Log("[Bootstrap] MainScene инициализирована");
     }
 }

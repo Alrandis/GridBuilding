@@ -18,6 +18,7 @@ public static class BuildingConfigLoader
 
         string json = File.ReadAllText(fullPath);
         var wrapper = JsonUtility.FromJson<BuildingConfigWrapper>(json);
+        Debug.Log("Загрузка произошла успешно");
         return wrapper?.Buildings ?? new List<BuildingConfig>();
     }
 
