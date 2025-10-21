@@ -390,7 +390,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5a03a4df95a7e04d859c117295ac14c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _prefabToSpawn: {fileID: 3409288410747102782, guid: 189b7bfe27f57e64ea4ae2e6fb7afd3c, type: 3}
+  _prefabToSpawn: {fileID: 3409288410747102782, guid: 5cecf5f81bcc35b428e2100d48f6c1ad, type: 3}
   _icon: {fileID: 0}
 --- !u!114 &455004675
 MonoBehaviour:
