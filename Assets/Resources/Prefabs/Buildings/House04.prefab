@@ -46,8 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _configId: House04
-  _occupiedCells:
-  - {x: 0, y: 0}
+  _occupiedCells: []
   _pivot: {x: 0, y: 0}
 --- !u!1 &8571624585820979883
 GameObject:

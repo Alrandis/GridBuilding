@@ -57,7 +57,7 @@ public class SaveGrid : MonoBehaviour, ISaveable
                 continue;
             }
 
-            // Загружаем prefab по пути
+            // Загружаем префаб
             var prefab = Resources.Load<GameObject>(config.PrefabPath);
             if (prefab == null)
             {
@@ -65,11 +65,37 @@ public class SaveGrid : MonoBehaviour, ISaveable
                 continue;
             }
 
+            // Получаем мировую позицию pivot-а
             var worldPos = _gridManager.GetWorldPosition(b.Position.x, b.Position.y);
+
+            // Создаём объект
             var go = Instantiate(prefab, worldPos, Quaternion.Euler(0, 0, b.Rotation));
-            
-            _gridManager.OccupyCells(new[] { b.Position }, go, b.BuildingId);
+
+            // Переводим локальные координаты занятых клеток из конфигурации в мировые
+            var occupiedCells = new List<Vector2Int>();
+            foreach (var localCell in config.OccupiedCells)
+            {
+                var rotated = RotateCell(localCell, b.Rotation);
+                var globalCell = b.Position + rotated;
+                occupiedCells.Add(globalCell);
+            }
+
+            // Помечаем все эти клетки занятыми
+            _gridManager.OccupyCells(occupiedCells, go, b.BuildingId);
         }
+    }
+
+    private Vector2Int RotateCell(Vector2Int cell, float rotation)
+    {
+        int rot = Mathf.RoundToInt(rotation) % 360;
+        return rot switch
+        {
+            0 => cell,
+            90 => new Vector2Int(-cell.y, cell.x),
+            180 => new Vector2Int(-cell.x, -cell.y),
+            270 => new Vector2Int(cell.y, -cell.x),
+            _ => cell
+        };
     }
 
 }
