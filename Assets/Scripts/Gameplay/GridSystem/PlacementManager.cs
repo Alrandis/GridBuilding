@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
@@ -57,7 +58,6 @@ public class PlacementManager : MonoBehaviour
         if (_currentBuilding == null) return;
 
         HandleMovement();
-        HandleRotation();
         UpdateBuildingPosition();
     }
 
@@ -102,19 +102,36 @@ public class PlacementManager : MonoBehaviour
 
     private void HandleRotation()
     {
-        if (Keyboard.current.rKey.wasPressedThisFrame && _currentBuilding != null)
-        {
-            _currentRotation += 90;
-            if (_currentRotation >= 360) _currentRotation = 0;
-
-            _currentBuilding.transform.rotation = Quaternion.Euler(0, 0, _currentRotation);
-        }
+        _currentRotation += 90;
+        if (_currentRotation >= 360) _currentRotation = 0;
+        UpdateBuildingPosition();
     }
 
     private void UpdateBuildingPosition()
     {
-        _currentBuilding.transform.position = _gridManager.GetWorldPosition(_currentGridPos.x, _currentGridPos.y);
+        if (_currentBuilding == null) return;
+
+        var placeable = _currentBuilding.GetComponent<PlaceableObject>();
+        if (placeable == null) return;
+
+        // Берём первый повёрнутый cell (обычно pivot)
+        var cells = placeable.GetWorldCells(_currentGridPos, _currentRotation);
+
+        // Считаем позицию в мире через pivot
+        Vector3 worldPos = Vector3.zero;
+        foreach (var cell in cells)
+        {
+            worldPos += _gridManager.GetWorldPosition(cell.x, cell.y);
+        }
+        worldPos /= cells.Count(); // центрируем превью по всем клеткам
+        worldPos.z = 0;
+
+        _currentBuilding.transform.position = worldPos;
+
+        // Применяем поворот
+        _currentBuilding.transform.rotation = Quaternion.Euler(0, 0, _currentRotation);
     }
+
 
     private void PlaceBuilding()
     {
@@ -134,7 +151,8 @@ public class PlacementManager : MonoBehaviour
             return;
         }
 
-        _gridManager.OccupyCells(placeable.GetWorldCells(_currentGridPos), _currentBuilding);
+        //_gridManager.OccupyCells(placeable.GetWorldCells(_currentGridPos), _currentBuilding);
+        _gridManager.OccupyCells(cells, _currentBuilding);
         _currentBuilding = null;
         _currentRotation = 0; // сбрасываем угол для следующего здания
     }

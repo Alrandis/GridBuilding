@@ -390,7 +390,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5a03a4df95a7e04d859c117295ac14c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _prefabToSpawn: {fileID: 6876968539663288873, guid: 310864998179b804a9e3c0ffedddb40c, type: 3}
+  _prefabToSpawn: {fileID: 3409288410747102782, guid: 189b7bfe27f57e64ea4ae2e6fb7afd3c, type: 3}
   _icon: {fileID: 0}
 --- !u!114 &455004675
 MonoBehaviour:
@@ -1425,7 +1425,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gridManager: {fileID: 1298796415}
-  _testBuildingPrefab: {fileID: 3409288410747102782, guid: c67e49bfef1ccf34baf2b79c9fc09626, type: 3}
   _inputManager: {fileID: 1740752855}
   _moveRepeatDelay: 0.15
 --- !u!4 &920673881
@@ -1680,7 +1679,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5a03a4df95a7e04d859c117295ac14c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _prefabToSpawn: {fileID: 6876968539663288873, guid: 3014f9c82a590b04d8568828ee0de47e, type: 3}
+  _prefabToSpawn: {fileID: 3409288410747102782, guid: 7c2b3dde25c05bf43bff5edb260d32e2, type: 3}
   _icon: {fileID: 0}
 --- !u!114 &1006236472
 MonoBehaviour:
@@ -2154,7 +2153,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.28852084, y: 0.12270371}
   m_AnchorMax: {x: 0.7144792, y: 0.351}
-  m_AnchoredPosition: {x: 1.2271118, y: 1}
+  m_AnchoredPosition: {x: 1.2271729, y: 1}
   m_SizeDelta: {x: 101.0963, y: 28.176498}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1371789230
