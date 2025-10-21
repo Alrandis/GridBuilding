@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,9 +14,10 @@ public class UIController : MonoBehaviour
     [SerializeField] private Button _deleteModeButton;
     [SerializeField] private Button _saveButton;
     [SerializeField] private Button _loadButton;
-    [SerializeField] private BuildingButton[] _buildingButtons;
+    [SerializeField] private List<BuildingButton> _buildingButtons = new();
 
     [SerializeField] private GameObject _buildingPanel;
+    [SerializeField] private GameObject _buttonPrefab; // Префаб кнопки с компонентом BuildingButton
 
     private void Awake()
     {
@@ -23,14 +26,27 @@ public class UIController : MonoBehaviour
         _placeModeButton.onClick.AddListener(EnablePlacementMode);
         _deleteModeButton.onClick.AddListener(EnableDeletionMode);
 
-        for (int i = 0; i < _buildingButtons.Length; i++)
+        List<BuildingConfig> buildingConfigs = BuildingDatabase.Instance.GetAll().ToList();
+
+        foreach (BuildingConfig config in buildingConfigs)
         {
-            _buildingButtons[i].OnBuildingSelected += SelectBuilding;
+            CreateButtonForBuilding(config);
         }
 
         // Сохранение / загрузка
         _saveButton.onClick.AddListener(SaveData);
         _loadButton.onClick.AddListener(LoadData);
+    }
+
+    private void CreateButtonForBuilding(BuildingConfig config)
+    {
+        GameObject buildingGameObj = Instantiate(_buttonPrefab, _buildingPanel.transform);
+
+        BuildingButton buildingButton = buildingGameObj.GetComponent<BuildingButton>();
+        buildingButton.Initialize(config.DisplayName, config.ImagePath, config.PrefabPath); 
+        buildingButton.OnBuildingSelected += SelectBuilding;
+
+        _buildingButtons.Add(buildingButton);
     }
 
     #region Mode Switching

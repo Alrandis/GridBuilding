@@ -3,16 +3,21 @@ using System.Collections.Generic;
 
 public class PlaceableObject : MonoBehaviour
 {
+    [Tooltip("Уникальный Id для здания, что нужен, чтобы подставить данные из конфига.")]
+    [SerializeField] private string _configId;
     [Tooltip("Список клеток, которые занимает объект, в локальных координатах относительно pivot.")]
-    [SerializeField]
-    private List<Vector2Int> _occupiedCells = new List<Vector2Int>() { Vector2Int.zero };
-
+    [SerializeField] private List<Vector2Int> _occupiedCells = new List<Vector2Int>() { Vector2Int.zero };
     [Tooltip("Опорная точка (положение центра привязки на сетке)")]
-    [SerializeField]
-    private Vector2Int _pivot = Vector2Int.zero;
+    [SerializeField] private Vector2Int _pivot = Vector2Int.zero;
 
-    public IReadOnlyList<Vector2Int> OccupiedCells => _occupiedCells;
-    public Vector2Int Pivot => _pivot;
+    public void Initialize()
+    {
+        var config = BuildingDatabase.Instance.GetById(_configId);
+        if (config == null) return;
+
+        _occupiedCells = new List<Vector2Int>(config.OccupiedCells);
+        _pivot = config.Pivot;
+    }
 
     public IEnumerable<Vector2Int> GetWorldCells(Vector2Int gridOrigin, int rotationDegrees = 0)
     {

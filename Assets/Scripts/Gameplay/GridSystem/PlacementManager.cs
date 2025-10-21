@@ -111,11 +111,12 @@ public class PlacementManager : MonoBehaviour
     {
         if (_currentBuilding == null) return;
 
-        var placeable = _currentBuilding.GetComponent<PlaceableObject>();
-        if (placeable == null) return;
+        var placeableObject = _currentBuilding.GetComponent<PlaceableObject>();
+        if (placeableObject == null) return;
+        placeableObject.Initialize();
 
         // ЅерЄм первый повЄрнутый cell (обычно pivot)
-        var cells = placeable.GetWorldCells(_currentGridPos, _currentRotation);
+        var cells = placeableObject.GetWorldCells(_currentGridPos, _currentRotation);
 
         // —читаем позицию в мире через pivot
         Vector3 worldPos = Vector3.zero;
@@ -137,21 +138,21 @@ public class PlacementManager : MonoBehaviour
     {
         if (_currentBuilding == null) return;
 
-        var placeable = _currentBuilding.GetComponent<PlaceableObject>();
-        if (placeable == null)
+        var placeableObject = _currentBuilding.GetComponent<PlaceableObject>();
+        if (placeableObject == null)
         {
             Debug.LogWarning("Prefab missing PlaceableObject!");
             return;
         }
+        placeableObject.Initialize();
 
-        var cells = placeable.GetWorldCells(_currentGridPos, _currentRotation);
+        var cells = placeableObject.GetWorldCells(_currentGridPos, _currentRotation);
         if (!_gridManager.IsAreaFree(cells))
         {
             Debug.Log("Can't place Ч cells occupied!");
             return;
         }
 
-        //_gridManager.OccupyCells(placeable.GetWorldCells(_currentGridPos), _currentBuilding);
         _gridManager.OccupyCells(cells, _currentBuilding);
         _currentBuilding = null;
         _currentRotation = 0; // сбрасываем угол дл€ следующего здани€

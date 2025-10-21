@@ -1,0 +1,28 @@
+{
+  "Buildings": [
+    {
+      "Id": "house_01",
+      "PrefabPath": "Prefabs/Buildings/House01",
+      "ImagePath": "Images/Buildings/House01",
+      "Pivot": { "x": 1, "y": 1 },
+      "OccupiedCells": [ { "x":0, "y":0 }, { "x":1, "y":0 }, { "x":0, "y":1 } ],
+      "DisplayName": "Small House"
+    },
+    {
+      "Id": "house_02",
+      "PrefabPath": "Prefabs/Buildings/Tower01",
+      "ImagePath": "Images/Buildings/Tower01",
+      "Pivot": { "x": 0, "y": 0 },
+      "OccupiedCells": [ { "x":0, "y":0 }, { "x":0, "y":1 }, { "x":1, "y":0 }, { "x":1, "y":1 } ],
+      "DisplayName": "Watch Tower"
+    },
+	{
+      "Id": "house_03",
+      "PrefabPath": "Prefabs/Buildings/Tower01",
+      "ImagePath": "Images/Buildings/Tower01",
+      "Pivot": { "x": 0, "y": 0 },
+      "OccupiedCells": [ { "x":0, "y":0 }, { "x":0, "y":1 }, { "x":1, "y":0 }, { "x":1, "y":1 } ],
+      "DisplayName": "Watch Tower"
+    }
+  ]
+}

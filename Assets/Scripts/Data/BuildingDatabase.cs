@@ -1,11 +1,25 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BuildingDatabase
+public class BuildingDatabase : MonoBehaviour
 {
+    public static BuildingDatabase Instance;
     private Dictionary<string, BuildingConfig> _configsById;
 
-    public BuildingDatabase(List<BuildingConfig> configs)
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
+    public void Initialize(List<BuildingConfig> configs)
     {
         _configsById = new Dictionary<string, BuildingConfig>();
         foreach (var config in configs)
