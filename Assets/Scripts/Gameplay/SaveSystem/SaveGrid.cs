@@ -30,7 +30,7 @@ public class SaveGrid : MonoBehaviour, ISaveable
         {
             if (!added.Add(entry.Value)) continue;
 
-            var buildingId = entry.Value.GameObject.name.Replace("(Clone)", "").Trim();
+            var buildingId = entry.Value.BuildingId;
             data.Buildings.Add(new BuildingData
             {
                 BuildingId = buildingId,
@@ -48,12 +48,12 @@ public class SaveGrid : MonoBehaviour, ISaveable
 
         _gridManager.ClearGrid();
 
-        foreach (var b in data.Buildings)
+        foreach (var buildingData in data.Buildings)
         {
-            var config = _buildingDatabase.GetById(b.BuildingId);
+            var config = _buildingDatabase.GetById(buildingData.BuildingId);
             if (config == null)
             {
-                Debug.LogWarning($"[SaveGrid] Config not found for {b.BuildingId}");
+                Debug.LogWarning($"[SaveGrid] Config not found for {buildingData.BuildingId}");
                 continue;
             }
 
@@ -66,22 +66,22 @@ public class SaveGrid : MonoBehaviour, ISaveable
             }
 
             // Получаем мировую позицию pivot-а
-            var worldPos = _gridManager.GetWorldPosition(b.Position.x, b.Position.y);
+            var worldPos = _gridManager.GetWorldPosition(buildingData.Position.x, buildingData.Position.y);
 
             // Создаём объект
-            var go = Instantiate(prefab, worldPos, Quaternion.Euler(0, 0, b.Rotation));
+            var go = Instantiate(prefab, worldPos, Quaternion.Euler(0, 0, buildingData.Rotation));
 
             // Переводим локальные координаты занятых клеток из конфигурации в мировые
             var occupiedCells = new List<Vector2Int>();
             foreach (var localCell in config.OccupiedCells)
             {
-                var rotated = RotateCell(localCell, b.Rotation);
-                var globalCell = b.Position + rotated;
+                var rotated = RotateCell(localCell, buildingData.Rotation);
+                var globalCell = buildingData.Position + rotated;
                 occupiedCells.Add(globalCell);
             }
 
             // Помечаем все эти клетки занятыми
-            _gridManager.OccupyCells(occupiedCells, go, b.BuildingId);
+            _gridManager.OccupyCells(occupiedCells, go, buildingData.BuildingId);
         }
     }
 
