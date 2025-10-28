@@ -18,16 +18,16 @@
 
 # Скрины
 Папки со скриптами разбитые в отдельные модули с помощью использования Assembly Definition
-![scripts](Screenshots/scripts.png) 
+![scripts](screenshots/scripts.png) 
 Так устроены папки к месту где хранятся префабы и картинки для конфигурационных файлов
-![resources](Screenshots/resources.png) 
+![resources](screenshots/resources.png) 
 
 # Гиф, могут загрузится не сразу, нужно подождать
 Размещение зданий по сетке
-![placing Gif](Screenshots/placing.gif) 
+![placing Gif](screenshots/placing.gif) 
 Удаление зданий
-![delete Gif](Screenshots/delete.gif) 
+![delete Gif](screenshots/delete.gif) 
 Загрузка зданий после сохранения по нажатию кнопки
-![load Gif](Screenshots/load.gif) 
+![load Gif](screenshots/load.gif) 
 Удаление после загрузки демонстрация того, что загружать можно не только при включении
-![loadDelete Gif](Screenshots/loadDelete.gif) 
+![loadDelete Gif](screenshots/loadDelete.gif) 
