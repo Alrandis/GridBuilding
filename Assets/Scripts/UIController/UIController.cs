@@ -19,6 +19,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private List<BuildingButton> _buildingButtons = new();
 
     [SerializeField] private GameObject _buildingPanel;
+    [SerializeField] private GameObject _content;
     [SerializeField] private GameObject _buttonPrefab; // Префаб кнопки с компонентом BuildingButton
 
     private void Awake()
@@ -51,7 +52,7 @@ public class UIController : MonoBehaviour
 
     private void CreateButtonForBuilding(BuildingConfig config)
     {
-        GameObject buildingGameObj = Instantiate(_buttonPrefab, _buildingPanel.transform);
+        GameObject buildingGameObj = Instantiate(_buttonPrefab, _content.transform);
 
         BuildingButton buildingButton = buildingGameObj.GetComponent<BuildingButton>();
         buildingButton.Initialize(config.DisplayName, config.ImagePath, config.PrefabPath); 

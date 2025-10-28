@@ -1493,7 +1493,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Content: {fileID: 1086574360}
   m_Horizontal: 1
-  m_Vertical: 1
+  m_Vertical: 0
   m_MovementType: 1
   m_Elasticity: 0.1
   m_Inertia: 1
@@ -2419,7 +2419,8 @@ MonoBehaviour:
   _saveButton: {fileID: 1659322901}
   _loadButton: {fileID: 727281457}
   _buildingButtons: []
-  _buildingPanel: {fileID: 1086574359}
+  _buildingPanel: {fileID: 1371789228}
+  _content: {fileID: 1086574359}
   _buttonPrefab: {fileID: 5105691081453621572, guid: 9827a042d70bdd444a49d6b204c18c71, type: 3}
 --- !u!4 &650363909
 Transform:

@@ -14,7 +14,7 @@
       "ImagePath": "Art/Images/Buildings/houseD",
       "Pivot": { "x": 0, "y": 0 },
       "OccupiedCells": [ { "x":0, "y":0 }, { "x":0, "y":1 }, { "x":1, "y":1}, { "x":1, "y":0 },{ "x":-1, "y":1}, { "x":-1, "y":0 }],
-      "DisplayName": "Watch Tower"
+      "DisplayName": "Big House"
     },
 	{
       "Id": "tower",
@@ -30,7 +30,7 @@
       "ImagePath": "Art/Images/Buildings/towerA",
       "Pivot": { "x": 0, "y": 0 },
       "OccupiedCells": [ { "x":0, "y":0 }, { "x": 0, "y": 1 }, { "x": 0, "y": 2 } ],
-      "DisplayName": "fdsfdfsd"
+      "DisplayName": "Battle Tower"
     },
 	{
       "Id": "wall",
