@@ -1,0 +1,44 @@
+{
+  "Buildings": [
+    {
+      "Id": "houseA",
+      "PrefabPath": "Prefabs/Buildings/houseA",
+      "ImagePath": "Art/Images/Buildings/houseA",
+      "Pivot": { "x": 0, "y": 0 },
+      "OccupiedCells": [ { "x":0, "y":0 }, { "x":0, "y":1 }, { "x":1, "y":1}, { "x":1, "y":0 }],
+      "DisplayName": "Small House"
+    },
+    {
+      "Id": "houseD",
+      "PrefabPath": "Prefabs/Buildings/houseD",
+      "ImagePath": "Art/Images/Buildings/houseD",
+      "Pivot": { "x": 0, "y": 0 },
+      "OccupiedCells": [ { "x":0, "y":0 }, { "x":0, "y":1 }, { "x":1, "y":1}, { "x":1, "y":0 },{ "x":-1, "y":1}, { "x":-1, "y":0 }],
+      "DisplayName": "Big House"
+    },
+	{
+      "Id": "tower",
+      "PrefabPath": "Prefabs/Buildings/tower",
+      "ImagePath": "Art/Images/Buildings/tower",
+      "Pivot": { "x": 0, "y": 1 },
+      "OccupiedCells": [ { "x":0, "y":0 }, { "x": 0, "y": 1 },{ "x": 0, "y": 2 }, { "x":0, "y":3 } ],
+      "DisplayName": "Watch Tower"
+    },
+	{
+      "Id": "towerA",
+      "PrefabPath": "Prefabs/Buildings/towerA",
+      "ImagePath": "Art/Images/Buildings/towerA",
+      "Pivot": { "x": 0, "y": 0 },
+      "OccupiedCells": [ { "x":0, "y":0 }, { "x": 0, "y": 1 }, { "x": 0, "y": 2 } ],
+      "DisplayName": "Battle Tower"
+    },
+	{
+      "Id": "wall",
+      "PrefabPath": "Prefabs/Buildings/wall",
+      "ImagePath": "Art/Images/Buildings/wall",
+      "Pivot": { "x": 0, "y": 0 },
+      "OccupiedCells": [ { "x":0, "y":0 }, { "x": 1, "y": 0 } ],
+      "DisplayName": "wall"
+    }
+  ]
+}
